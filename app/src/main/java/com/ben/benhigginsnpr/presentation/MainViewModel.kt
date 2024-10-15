@@ -1,5 +1,6 @@
 package com.ben.benhigginsnpr.presentation
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -16,11 +17,12 @@ class MainViewModel  @Inject constructor(
     private val headlineDataManager: HeadlineDataManager
 ): ViewModel() {
 
+    private val TAG = MainViewModel::class.java.simpleName
     private val liveData = MutableLiveData<List<HeadLineItem>>()
 
-
-    suspend fun fetchHeadlines() = viewModelScope.launch {
+    suspend fun fetchHeadlines() {
         liveData.postValue(headlineDataManager.getHeadlinesList())
+        println("LiveData Updated ${liveData.value}")
     }
 
     fun getLiveDataList() = liveData as LiveData<List<HeadLineItem>>

@@ -3,7 +3,6 @@ package com.ben.benhigginsnpr
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.widget.Spinner
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -108,10 +107,10 @@ class MainActivity : ComponentActivity() {
             modifier = Modifier
                 .padding(16.dp)
                 .clickable {
-                    Log.d(TAG, "Clicked: ${item.videoUrl}")
+                    Log.d(TAG, "Clicked: ${item.articleUrl}")
                     val intent = Intent(this, WebViewActivity::class.java)
                         .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                        .putExtra("VIDEO_URL", item.videoUrl)
+                        .putExtra("VIDEO_URL", item.articleUrl)
 
                     startActivity(intent)
                 }

@@ -18,6 +18,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.viewinterop.AndroidView
 import com.ben.benhigginsnpr.MainActivity
 import com.ben.benhigginsnpr.ui.LoadingPage
@@ -76,11 +78,15 @@ class WebViewActivity: ComponentActivity() {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Top,
+
             ){
 
 
                 AndroidView(
-                    modifier = Modifier.fillMaxHeight(.95f),
+                    modifier = Modifier.fillMaxHeight(.95f)
+                        .semantics {
+                            this.contentDescription = "WebView"
+                        },
                     factory = {context ->
                        webView
                     })
