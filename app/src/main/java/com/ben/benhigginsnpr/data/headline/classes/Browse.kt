@@ -1,4 +1,4 @@
-package com.ben.benhigginsnpr.data.headline.data
+package com.ben.benhigginsnpr.data.headline.classes
 
 data class Browse(
     val contentType: String,

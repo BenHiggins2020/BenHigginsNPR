@@ -3,30 +3,25 @@ package com.ben.benhigginsnpr.presentation
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.ben.benhigginsnpr.data.headline.data.NPRHeadlineItem
+import androidx.lifecycle.viewModelScope
+import com.ben.benhigginsnpr.data.headline.classes.NPRHeadlineItem
+import com.ben.benhigginsnpr.domain.HeadLineItem
 import com.ben.benhigginsnpr.domain.HeadlineDataManager
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-//@HiltViewModel
-class MainViewModel constructor(
-): ViewModel() {
+@HiltViewModel
+class MainViewModel  @Inject constructor(
     private val headlineDataManager: HeadlineDataManager
+): ViewModel() {
 
-    private val liveData = MutableLiveData<NPRHeadlineItem>()
-    init {
-        headlineDataManager = HeadlineDataManager()
+    private val liveData = MutableLiveData<List<HeadLineItem>>()
+
+
+    suspend fun fetchHeadlines() = viewModelScope.launch {
+        liveData.postValue(headlineDataManager.getHeadlinesList())
     }
 
-    suspend fun getNPRHeadlines()  {
-        println("BEN - getNPRHeadlines called")
-        headlineDataManager.getHeadlines().collect {
-            println("BEN COLLECTING LIST DATA ${it?.items?.get(0)}")
-            liveData.postValue(it)
-        }
-    }
-
-    fun getLiveDataList() = liveData as LiveData<NPRHeadlineItem>
+    fun getLiveDataList() = liveData as LiveData<List<HeadLineItem>>
 }

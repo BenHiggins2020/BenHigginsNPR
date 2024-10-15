@@ -1,9 +1,8 @@
 package com.ben.benhigginsnpr.data
 
-import com.ben.benhigginsnpr.data.headline.data.NPRHeadlineItem
+import com.ben.benhigginsnpr.data.headline.classes.NPRHeadlineItem
 import retrofit2.Response
 import retrofit2.http.GET
-import retrofit2.http.Query
 
 interface NPRHeadlinesApi {
 

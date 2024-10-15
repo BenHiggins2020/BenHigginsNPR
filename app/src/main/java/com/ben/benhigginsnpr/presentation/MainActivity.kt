@@ -1,17 +1,14 @@
 package com.ben.benhigginsnpr
 
+import android.content.Intent
 import android.os.Bundle
-import android.widget.ProgressBar
+import android.util.Log
 import android.widget.Spinner
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -25,44 +22,42 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.LiveData
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.compose.rememberNavController
+import androidx.lifecycle.repeatOnLifecycle
 import coil3.ImageLoader
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
-import coil3.request.colorSpace
-import coil3.request.lifecycle
-import com.ben.benhigginsnpr.data.headline.data.AttributesX
-import com.ben.benhigginsnpr.data.headline.data.Item
-import com.ben.benhigginsnpr.data.headline.data.NPRHeadlineItem
+import com.ben.benhigginsnpr.domain.HeadLineItem
 import com.ben.benhigginsnpr.presentation.MainViewModel
+import com.ben.benhigginsnpr.presentation.WebViewActivity
+import com.ben.benhigginsnpr.ui.LoadingPage
 import com.ben.benhigginsnpr.ui.theme.BenHigginsNPRTheme
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-//@AndroidEntryPoint
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     private val viewModel:MainViewModel by viewModels<MainViewModel>()
-
+    private val TAG = MainActivity::class.simpleName
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        lifecycleScope.launchWhenCreated {
-            println("BEN - CALLING GETNPRHEADLINES")
-            viewModel.getNPRHeadlines()
+        lifecycleScope.launch(Dispatchers.IO) {
+            repeatOnLifecycle(Lifecycle.State.CREATED){
+                Log.d(TAG,"Fetching NPR Headlines")
+                val job = viewModel.fetchHeadlines()
+
+            }
         }
 
         setContent {
@@ -72,36 +67,33 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Greeting("Android")
+                    mainView()
                 }
             }
         }
     }
 
     @Composable
-    fun Greeting(name: String, modifier: Modifier = Modifier) {
-        var text = remember { mutableStateOf(name) }
+    fun mainView() {
 
-        var headLines = remember { mutableStateOf(listOf<Item>()) }
+        val headLines = remember { mutableStateOf(listOf<HeadLineItem>()) }
 
         viewModel.getLiveDataList().observe(this@MainActivity){ it->
-            text.value = it.items.get(0).attributes.title
-            headLines.value = it.items
+            headLines.value = it
         }
-
-        println("BEN - Loading the text value ")
 
         if(headLines.value.isNotEmpty()){
             List(headLines.value)
         } else {
-            Spinner(this@MainActivity)
+            LoadingPage.LoadingView {
+                //Do nothing
+            }
         }
 
     }
 
-
     @Composable
-    fun List(newsItems:List<Item>){
+    fun List(newsItems:List<HeadLineItem>){
         LazyColumn {
             items(newsItems.size) { index ->
                headlinesItem(newsItems.get(index))
@@ -110,19 +102,22 @@ class MainActivity : ComponentActivity() {
     }
 
     @Composable
-    fun headlinesItem(item:Item){
+    fun headlinesItem(item:HeadLineItem){
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .padding(16.dp)
                 .clickable {
-                    println("BEN - Clicked: Navigate to this WebviewPage ${item.links.web.get(0).href}")
-                    //start activity with webview for
+                    Log.d(TAG, "Clicked: ${item.videoUrl}")
+                    val intent = Intent(this, WebViewActivity::class.java)
+                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        .putExtra("VIDEO_URL", item.videoUrl)
 
+                    startActivity(intent)
                 }
         ) {
-            ImageItem(item.links.image[2].href)
-            Text(text = item.attributes.title)
+            ImageItem(item.imageUrl)
+            Text(text = item.title)
         }
     }
 
@@ -141,7 +136,7 @@ class MainActivity : ComponentActivity() {
                     .padding(16.dp)
                     .height(100.dp)
                     .width(100.dp)
-                    .border(1.dp, MaterialTheme.colorScheme.primary,CircleShape)
+                    .border(1.dp, MaterialTheme.colorScheme.primary, CircleShape)
                     .clip(CircleShape)
             )
     }

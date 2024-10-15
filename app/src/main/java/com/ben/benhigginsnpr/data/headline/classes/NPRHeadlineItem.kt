@@ -1,4 +1,4 @@
-package com.ben.benhigginsnpr.data.headline.data
+package com.ben.benhigginsnpr.data.headline.classes
 
 data class NPRHeadlineItem(
     val attributes: Attributes,

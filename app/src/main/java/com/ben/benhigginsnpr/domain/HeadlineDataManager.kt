@@ -10,22 +10,48 @@ import javax.inject.Inject
 
 class HeadlineDataManager @Inject constructor() {
 
+    private val TAG = HeadlineDataManager::class.simpleName
+
    suspend fun getHeadlines() = flow {
 
-            println("BEN - getHeadlines API calling...")
             try {
-                val nprData = RetrofitInstance.nprService.getHeadlines()
-                val raw = nprData.raw()
-                val data = nprData.body()
+                val nprData = RetrofitInstance.nprService.getHeadlines() ?: null
+                if(nprData?.body() == null) return@flow
+                nprData!!.body().let {
+                    it!!.items.map {
+                        emit(
+                            HeadLineItem(
+                            title = it.attributes.title,
+                            imageUrl = it.links.image[2].href,
+                            videoUrl = it.links.web[0].href
+                             )
+                        )
+                    }
 
-                println("BEN - getHeadlines API returned ${raw.isSuccessful} ${raw}  ${data?.items?.get(0)} ${data?.items?.size}")
-                emit(data)
+                }
 
             } catch (e:Exception){
                 Log.e("HeadlineDataManager","Error getting headlines $e")
             }
+   }
 
-
+    suspend fun getHeadlinesList(): List<HeadLineItem>? {
+        try {
+            val headLines = mutableListOf<HeadLineItem>()
+            RetrofitInstance.nprService.getHeadlines().body().let { it ->
+                it?.items?.map {
+                   val item =  HeadLineItem(
+                        title = it.attributes.title,
+                        imageUrl = it.links.image[2].href,
+                        videoUrl = it.links.web[0].href
+                   )
+                    headLines.add(item)
+                }
+                return headLines as List<HeadLineItem>
+            }
+        }catch (e:Exception){
+            Log.e(TAG,"Api call failed with exception: $e")
+            return null
+        }
     }
-
 }
