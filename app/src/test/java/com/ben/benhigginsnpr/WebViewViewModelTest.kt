@@ -29,7 +29,6 @@ class WebViewViewModelTest {
 
     @Before
     fun setup(){
-
         Dispatchers.setMain(testDispatcher)
     }
 

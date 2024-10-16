@@ -62,8 +62,7 @@ class MainViewModelTest {
              mainVM.fetchHeadlines()
         }
 
-        val ld = mainVM.getLiveDataList()
-        val value = getLiveDataValue(ld)
+        val value = getLiveDataValue(mainVM.getLiveDataList())
         assertEquals(list, value)
     }
 

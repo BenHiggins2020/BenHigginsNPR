@@ -30,10 +30,13 @@ import dagger.hilt.android.AndroidEntryPoint
 class WebViewActivity: ComponentActivity() {
 
     private val TAG = WebViewActivity::class.java.simpleName
+
     private val ARTICLE_URL = "ARTICLE_URL"
+
     lateinit var webView: WebView
 
     private val viewModel by viewModels<WebViewViewModel>()
+
     private lateinit var url:String
 
     @SuppressLint("SetJavaScriptEnabled")

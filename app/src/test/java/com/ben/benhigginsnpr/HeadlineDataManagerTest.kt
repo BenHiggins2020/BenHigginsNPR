@@ -21,7 +21,6 @@ class HeadlineDataManagerTest {
 
 
     val mockApi:NPRHeadlinesApi = mock(NPRHeadlinesApi::class.java)
-    val mockNPRItem:NPRHeadlineItem = mock(NPRHeadlineItem::class.java)
 
     val headlineDM:HeadlineDataManager = HeadlineDataManager(mockApi)
 
@@ -31,6 +30,7 @@ class HeadlineDataManagerTest {
     fun `test null api response`() = runTest {
 
         val successfulResponse = Response.success(NPRDataUtil.itemFilledLinks)
+
         `when`(mockApi.getHeadlines()).thenReturn(successfulResponse)
 
         val result = headlineDM.getHeadlinesList()
@@ -62,6 +62,7 @@ class HeadlineDataManagerTest {
     fun `test null api response empty`() = runTest {
 
         val successfulResponse = Response.success(NPRDataUtil.itemEmptyLinks)
+
         `when`(mockApi.getHeadlines()).thenReturn(successfulResponse)
 
         val result = headlineDM.getHeadlinesList()
@@ -70,7 +71,6 @@ class HeadlineDataManagerTest {
             emptyList<HeadLineItem>(),
             result
         )
-
     }
     @Test
     fun `test null api response null`() = runTest {

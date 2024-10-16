@@ -11,7 +11,6 @@ import retrofit2.converter.gson.GsonConverterFactory
 @Module
 @InstallIn(SingletonComponent::class)
 class DataModule {
-
     @Provides
     fun bindNPRApiService():NPRHeadlinesApi {
         return Retrofit.Builder()

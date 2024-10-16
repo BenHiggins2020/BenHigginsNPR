@@ -16,6 +16,7 @@ class MainActivityTest {
 
     @get:Rule
     val rule = createAndroidComposeRule<MainActivity>()
+
     val loadingPageText = "Please wait while this page loads"
 
     @Test

@@ -1,5 +1,6 @@
 package com.ben.benhigginsnpr
 
+import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.isDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
@@ -17,10 +18,10 @@ class WebViewActivityTest {
 
     val errorToastMessage = "An error occurred when loading the article. Please try again later"
 
-
     @Test
     fun `test webView displayed`(){
-        rule.onNodeWithContentDescription("WebView ",true).isDisplayed()
+
+        rule.onNode(hasContentDescription("WebView",true).and(!hasContentDescription("Button",true))).isDisplayed()
     }
 
     @Test
@@ -31,12 +32,12 @@ class WebViewActivityTest {
     @Test
     fun `test url in webview is correctly set`(){
         rule.activity.intent.putExtra("ARTICLE_URL",articleUrl)
+
         rule.activityRule.scenario.recreate()
 
         rule.activityRule.scenario.onActivity {
             assert(it.webView.url == articleUrl)
         }
-
     }
 
 

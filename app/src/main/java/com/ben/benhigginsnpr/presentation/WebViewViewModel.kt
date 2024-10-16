@@ -13,6 +13,7 @@ import javax.inject.Inject
 class WebViewViewModel @Inject constructor() :ViewModel() {
 
     private val TAG = WebViewViewModel::class.java.simpleName
+
     private val progressListener = MutableLiveData<Boolean>(false)
 
     val webViewClient = object:WebViewClient(){

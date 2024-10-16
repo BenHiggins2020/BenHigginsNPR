@@ -46,6 +46,7 @@ import kotlinx.coroutines.launch
 class MainActivity : ComponentActivity() {
 
     private val viewModel:MainViewModel by viewModels<MainViewModel>()
+
     private val TAG = MainActivity::class.simpleName
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,7 +55,9 @@ class MainActivity : ComponentActivity() {
         lifecycleScope.launch(Dispatchers.IO) {
             repeatOnLifecycle(Lifecycle.State.CREATED){
                 Log.d(TAG,"Fetching NPR Headlines")
-                val job = viewModel.fetchHeadlines()
+                if(viewModel.getLiveDataList().value.isNullOrEmpty()){
+                    viewModel.fetchHeadlines()
+                }
 
             }
         }
@@ -119,7 +122,6 @@ class MainActivity : ComponentActivity() {
             Text(text = item.title)
         }
     }
-
 
     @Composable
     fun ImageItem(imageUrl:String){

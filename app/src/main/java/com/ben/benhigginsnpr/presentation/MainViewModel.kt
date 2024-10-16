@@ -24,6 +24,5 @@ class MainViewModel  @Inject constructor(
     suspend fun fetchHeadlines() {
         liveData.postValue(headlineDataManager.getHeadlinesList())
     }
-
     fun getLiveDataList() = liveData as LiveData<List<HeadLineItem>>
 }
