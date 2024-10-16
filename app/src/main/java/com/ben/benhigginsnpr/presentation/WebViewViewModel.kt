@@ -23,7 +23,6 @@ class WebViewViewModel @Inject constructor() :ViewModel() {
         }
     }
 
-
     fun getWebViewLoadingListener() = progressListener as LiveData<Boolean>
 
 }

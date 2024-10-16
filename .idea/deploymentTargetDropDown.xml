@@ -5,7 +5,19 @@
       <entry key="app">
         <State />
       </entry>
-      <entry key="test_fetchHeadlines()">
+      <entry key="recreateActivityWithNewIntentData()">
+        <State />
+      </entry>
+      <entry key="test is this working!()">
+        <State />
+      </entry>
+      <entry key="test toast error message()">
+        <State />
+      </entry>
+      <entry key="test url in webview()">
+        <State />
+      </entry>
+      <entry key="test()">
         <State />
       </entry>
     </value>

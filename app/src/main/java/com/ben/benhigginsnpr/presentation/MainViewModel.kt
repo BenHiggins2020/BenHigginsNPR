@@ -11,6 +11,7 @@ import com.ben.benhigginsnpr.domain.HeadlineDataManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.coroutines.coroutineContext
 
 @HiltViewModel
 class MainViewModel  @Inject constructor(
@@ -22,7 +23,6 @@ class MainViewModel  @Inject constructor(
 
     suspend fun fetchHeadlines() {
         liveData.postValue(headlineDataManager.getHeadlinesList())
-        println("LiveData Updated ${liveData.value}")
     }
 
     fun getLiveDataList() = liveData as LiveData<List<HeadLineItem>>

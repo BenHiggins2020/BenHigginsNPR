@@ -30,23 +30,26 @@ import dagger.hilt.android.AndroidEntryPoint
 class WebViewActivity: ComponentActivity() {
 
     private val TAG = WebViewActivity::class.java.simpleName
-
-    private lateinit var webView: WebView
+    private val ARTICLE_URL = "ARTICLE_URL"
+    lateinit var webView: WebView
 
     private val viewModel by viewModels<WebViewViewModel>()
+    private lateinit var url:String
 
+    @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val url = intent.getStringExtra("VIDEO_URL") ?: "https://www.npr.org/"
+        url = intent.getStringExtra(ARTICLE_URL) ?: "https://www.npr.org/"
 
         if(url.equals("https://www.npr.org/")){
-            Toast.makeText(this,"An error occurred when loading the article. Please try again later",Toast.LENGTH_LONG)
-            finish()
+            Toast.makeText(this,
+                "An error occurred when loading the article. Please try again later",
+                Toast.LENGTH_LONG).show()
         }
 
         webView = WebView(this@WebViewActivity).apply {
-            loadUrl(url)
+            loadUrl(this@WebViewActivity.url)
             webViewClient = viewModel.webViewClient
             settings.javaScriptEnabled = true
         }
@@ -81,17 +84,18 @@ class WebViewActivity: ComponentActivity() {
 
             ){
 
-
                 AndroidView(
                     modifier = Modifier.fillMaxHeight(.95f)
                         .semantics {
-                            this.contentDescription = "WebView"
+                            this.contentDescription = "WebView $url"
+
                         },
                     factory = {context ->
                        webView
                     })
 
                 Button(
+                    modifier = Modifier.semantics { contentDescription = "WebView Back Button" },
                     onClick = {
                         startActivity(Intent(this@WebViewActivity,MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
                         finish()

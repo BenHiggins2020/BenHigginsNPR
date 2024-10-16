@@ -16,7 +16,6 @@ class MainActivityTest {
 
     @get:Rule
     val rule = createAndroidComposeRule<MainActivity>()
-
     val loadingPageText = "Please wait while this page loads"
 
     @Test
@@ -34,23 +33,10 @@ class MainActivityTest {
             nodes.get(1).isDisplayed()
         }
 
-
     }
 
     @Test
-    fun `test onClick for list items`(){
-
-        rule.waitUntil(3000) {
-            rule.onAllNodesWithContentDescription("News Image").get(0).isDisplayed()
-        }
-
-        rule.onAllNodesWithContentDescription("News Image").get(0).performClick()
-
-        rule.onNodeWithText(loadingPageText).isDisplayed()
-    }
-
-    @Test
-    fun `test cancel button after item press`(){
+    fun `test loading screen cancel button after item press`(){
 
         rule.waitUntil(3000) { rule.onAllNodesWithContentDescription("News Image").get(0).isDisplayed()}
 
@@ -65,17 +51,21 @@ class MainActivityTest {
     }
 
     @Test
-    fun `test webview is displayed`(){
+    fun `test webview is displayed on click`(){
 
         rule.waitUntil(3000) { rule.onAllNodesWithContentDescription("News Image").get(0).isDisplayed()}
 
         rule.onAllNodesWithContentDescription("News Image").get(0).performClick()
 
         rule.waitUntil(7000){
-            rule.onNode(hasContentDescription("WebView")).isDisplayed()
+            rule.onNode(hasContentDescription("WebView",true).and(!hasContentDescription("Button",true))).isDisplayed()
         }
+
+
     }
 
+    //Testing in the MainActivityTest allows us to confirm that after back button is pressed,
+    //the WebViewActivity is finished, returning to the MainActivity page presenting the list again
     @Test
     fun `test back button on webview`(){
 
@@ -84,14 +74,14 @@ class MainActivityTest {
         rule.onAllNodesWithContentDescription("News Image").get(0).performClick()
 
         rule.waitUntil(4000) {
-            rule.onNode(hasContentDescription("WebView")).isDisplayed()
+            rule.onNode(hasContentDescription("WebView",true).and(!hasContentDescription("Button",true))).isDisplayed()
         }
+        rule.onNodeWithContentDescription("WebView Back Button").performClick()
 
-        rule.onNodeWithText("Back").performClick()
+        rule.onNodeWithText(loadingPageText).isDisplayed()
 
-        rule.waitUntil(6000) {
-            rule.onNodeWithText(loadingPageText).isDisplayed()
-        }
+        rule.waitUntil(3000) { rule.onAllNodesWithContentDescription("News Image").get(0).isDisplayed()}
 
     }
+
 }

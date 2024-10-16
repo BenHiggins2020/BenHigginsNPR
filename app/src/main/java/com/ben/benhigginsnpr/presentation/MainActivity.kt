@@ -26,6 +26,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -110,7 +112,7 @@ class MainActivity : ComponentActivity() {
                     Log.d(TAG, "Clicked: ${item.articleUrl}")
                     val intent = Intent(this, WebViewActivity::class.java)
                         .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                        .putExtra("VIDEO_URL", item.articleUrl)
+                        .putExtra("ARTICLE_URL", item.articleUrl)
 
                     startActivity(intent)
                 }
